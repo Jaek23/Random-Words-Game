@@ -3,7 +3,7 @@ const {gql} = require('apollo-server-express');
 // Define the GraphQL Schema 
 const typeDefs = gql`
     type Query {
-        getRandomWord: String
+        getRandom: String
     }
     
     type Mutation {

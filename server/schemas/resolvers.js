@@ -5,7 +5,7 @@ let generatedWord = '';
 // Define the resolvers
 const resolvers = {
     Query: {
-        getRandomWord: async () => {
+        getRandom: async () => {
             const options = {
                 method:'GET',
                 url:'https://random-words5.p.rapidapi.com/getRandom',
