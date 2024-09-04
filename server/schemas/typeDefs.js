@@ -7,7 +7,7 @@ const typeDefs = gql`
     }
     
     type Mutation {
-        verifyWord(generatedWordInput: String!, typedWord: String!): Boolean!
+        verifyWord(generatedWord: String!, typeWord: String!): Boolean!
     }
 `;
 

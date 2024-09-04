@@ -27,9 +27,9 @@ const resolvers = {
     },
 
     Mutation:{
-        verifyWord: (parent, {generatedWordInput, typeWord}) => {
+        verifyWord: (parent, {typeWord}) => {
             // Compare the generated word with the typed word 
-            return generatedWordInput === typeWord;
+            return generatedWord === typeWord;
         },
     },
 };
