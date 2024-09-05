@@ -38,6 +38,7 @@ const renderInputBoxes = () => {
       value={inputs[index]}
       style={{width:'2rem', margin:'0.5rem'}}
       onChange={(e) => handleInputChange(e, index)}
+      onKeyDown={(e) => handlekeyDown(e, index)}
       ref={(el) => inputRefs.current[index] = el}
     />
   ));
@@ -53,6 +54,11 @@ const handleInputChange = (e, index) => {
   }
 };
 
+const handlekeyDown = (e, index) => {
+  if(e.key === 'Backspace' && !inputs[index] && index > 0) {
+    inputRefs.current[index - 1].focus();
+  }
+};
 
 if (loading) return <p>Loading...</p>;
 if (error) return <p>Error: {error.message}</p>;
