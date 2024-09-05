@@ -2,9 +2,11 @@
   "dependencies": {
     "apollo-server-express": "^3.13.0",
     "axios": "^1.7.5",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "graphql": "^16.9.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.1"
   },
   "devDependencies": {
@@ -13,6 +15,6 @@
   },
   "scripts": {
     "start": "node server/server.js",
-    "dev":"nodemon server/server.js"
+    "dev": "nodemon server/server.js"
   }
 }

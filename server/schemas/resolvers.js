@@ -1,4 +1,7 @@
 const axios = require('axios');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/Users');
 
 let generatedWord = ''; 
 
@@ -31,6 +34,47 @@ const resolvers = {
             // Compare the generated word with the typed word 
             return generatedWord === typeWord;
         },
+        signUp: async (_, {username, email, password}) => {
+            // Hash the password 
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Create a new user 
+            const user = new User({
+                username, 
+                email,
+                password: hashedPassword,
+            });
+
+            // Save the user into Mongo Database 
+            await user.save();
+
+            // Create a JWT token 
+            const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {
+                expiresIn:'7d',
+            });
+            
+            return {token, user};
+        },
+        login: async (_, {email, password}) => {
+            // Find the user by email 
+            const user = await User.findOne({email});
+            if(!user) {
+                throw new Error('User not found');
+            }
+
+            // Compare the password 
+            const valid = await bcrypt.compare(password, user.password);
+            if(!valid) {
+                throw new Error('Invalid Password');
+            }
+
+            // Create a JWT token
+            const token = jwt.sign({userId:user._id}, process.env.JWT_SECRET, {
+                expireIn:'7d',
+            });
+
+            return {token, user};
+        }
     },
 };
 

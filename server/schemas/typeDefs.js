@@ -6,6 +6,24 @@ const typeDefs = gql`
         getRandom: String
     }
     
+    type User {
+        id: ID!
+        username: String!
+        email:String!
+        password:String!
+        correctWordCount:Int!
+    }
+    
+    type AuthPayload {
+        token:String!
+        user:User!
+    }
+
+    extend type Mutation {
+        signUp(username: String!, email: String!, password: String!): AuthPayload!
+        login(email: String!, password: String!): AuthPayload!
+    }
+    
     type Mutation {
         verifyWord(generatedWord: String!, typeWord: String!): Boolean!
     }
