@@ -70,7 +70,7 @@ const resolvers = {
 
             // Create a JWT token
             const token = jwt.sign({userId:user._id}, process.env.JWT_SECRET, {
-                expireIn:'7d',
+                expiresIn:'7d',
             });
 
             return {token, user};
