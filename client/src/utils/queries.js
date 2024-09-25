@@ -5,3 +5,11 @@ export const GET_RANDOM_WORD = gql`
         getRandom
     }
 `
+export const GET_USER = gql`
+    query GetUser {
+        getUser {
+            username
+            correctWordCount
+        }
+    }
+`;

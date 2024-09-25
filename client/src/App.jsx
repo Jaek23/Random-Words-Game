@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ApolloProvider } from '@apollo/client';
 import WordButton from './components/WordButton';
 import client from "./apollo/apolloClient";

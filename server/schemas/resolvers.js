@@ -27,12 +27,43 @@ const resolvers = {
                 throw new Error('Failed to fetch random word');
             }
         },
+        getUser: async (_, args, context) => {
+            const userId = context.userId;
+            if(!userId) {
+                throw new Error('Not Authenticated');
+            }
+
+            // Find the user in the database 
+            const user = await User.findById(userId);
+            if(!user) {
+                throw new Error('User not found');
+            }
+
+            return user;
+        }
     },
 
     Mutation:{
-        verifyWord: (parent, {typeWord}) => {
-            // Compare the generated word with the typed word 
-            return generatedWord === typeWord;
+        verifyWord: async (parent, {generatedWord, typeWord}, context) => {
+            if(!context.userId){
+                throw new Error ('Not Authenticated');
+            }
+            const isCorrect = generatedWord === typeWord;
+
+            if(isCorrect) {
+                const user = await User.findById(context.userId);
+
+                if(!user){
+                    throw new Error('User not found');
+                }
+
+                user.correctWordCount +=1;
+                await user.save();
+
+                return true; // Return true if word is correct 
+            }
+
+            return false; // Return false if the word is incorrect 
         },
         signUp: async (_, {username, email, password}) => {
             // Hash the password 

@@ -27,3 +27,10 @@ export const LOGIN_USER = gql`
         }
     }
 `;
+
+// Verify word mutation 
+export const VERIFY_WORD = gql`
+    mutation VerifyWord($generatedWord: String!, $typeWord: String!){
+        verifyWord(generatedWord:$generatedWord, typeWord:$typeWord)
+    }
+`;

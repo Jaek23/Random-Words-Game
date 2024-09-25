@@ -4,6 +4,7 @@ const {gql} = require('apollo-server-express');
 const typeDefs = gql`
     type Query {
         getRandom: String
+        getUser: User
     }
     
     type User {
