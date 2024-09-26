@@ -4,7 +4,7 @@ import { GET_RANDOM_WORD } from '../utils/queries';
 import Score from './Score';
 import { VERIFY_WORD } from '../utils/mutations';
 
-const WordButton = () => {
+const WordButton = ({isLoggedIn}) => {
 
 const [word, setWord] = useState('');
 const [inputs, setInputs] = useState([]);
@@ -14,7 +14,6 @@ const [firstWordLoaded, setFirstWordLoaded] = useState(false);
 const [firstWordTyping, setFirstWordTyping] = useState(false);
 const [refetchScore, setRefetchScore] = useState(null);
 
-const [verifyWord] = useMutation(VERIFY_WORD);
 
 const {loading, data, error, refetch} = useQuery(GET_RANDOM_WORD, {
     onCompleted: (data) => {
@@ -35,6 +34,29 @@ const {loading, data, error, refetch} = useQuery(GET_RANDOM_WORD, {
     }
 });
 
+// Mutation hook for verifying the word
+const [verifyWord] = useMutation(VERIFY_WORD, {
+  onCompleted: (data) => {
+    if (data.verifyWord) {
+      console.log("Word verified successfully!");
+      // Refetch user data to update the score when word is correct
+      if (refetchScore) {
+        refetchScore(); // Trigger the refetch of user score
+      }
+    } else {
+      console.log("Incorrect word.");
+    }
+  },
+  onError: (error) => {
+    console.error("Error verifying word:", error);
+  }
+});
+
+// Set the refetch function passed from the Score component
+const handleScoreUpdate = (refetchFunction) => {
+  setRefetchScore(() => refetchFunction);
+};
+
 useEffect(() => {
   console.log("useEffect - inputs:", inputs);
   console.log("useEffect - isTyping:", isTyping);
@@ -43,14 +65,17 @@ useEffect(() => {
   // Generate new word when all input boxes are filled
   if(firstWordLoaded && (firstWordTyping || isTyping) && inputs.every((input) => input !== '') && inputs.length === word.length) {
     console.log("All inputs filled, triggering new word generation");
-    if (refetchScore) {
-      refetchScore();  // Trigger refetch of user score
-    }
+    verifyWord({
+      variables: {
+        generatedWord: word,
+        typeWord: inputs.join('') // Combine inputs into a single string
+      }
+    });
     setTimeout(() => {
       handleClick(); // Generate a new word after typing all letters
     }, 500) // Small delay to prevent refetching
   }
-}, [inputs, isTyping, firstWordLoaded, firstWordTyping, word.length, refetchScore]);
+}, [inputs, isTyping, firstWordLoaded, firstWordTyping, word.length]);
 
 const handleClick = async () => {
   console.log("handleClick called - refetching word");
@@ -73,10 +98,6 @@ const handleClick = async () => {
   } catch (err) {
     console.error('Error refetching word:', err);
   }
-};
-
-const handleScoreUpdate = (refetchFn) => {
-  setRefetchScore(() => refetchFn);  // Store the refetch function for score update
 };
 
 const renderInputBoxes = () => {
@@ -132,7 +153,7 @@ if (error) return <p>Error: {error.message}</p>;
       <button onClick={handleClick} disabled={loading} >
         {loading ? 'Generating' : 'Generate Random Word'}
       </button>
-      <Score onScoreUpdate={handleScoreUpdate}/>
+       {isLoggedIn && <Score onScoreUpdate={handleScoreUpdate}/>}
    </div>
   )
 }

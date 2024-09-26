@@ -2,11 +2,11 @@ import React from 'react'
 import Login from '../components/Login'
 import SignUp from '../components/SignUp'
 
-const SignUpPage = () => {
+const SignUpPage = ({onLogIn}) => {
   return (
     <>
       <SignUp/>
-      <Login/>
+      <Login onLogIn={onLogIn}/>
     </>
   )
 }

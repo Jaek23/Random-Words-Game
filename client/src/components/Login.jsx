@@ -3,38 +3,31 @@ import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../utils/mutations';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = ({onLogIn}) => {
 
   const [formData, setFormData] = useState({
     email:'',
     password:'',
   });
 
-  const [login, {data, loading, error}] = useMutation(LOGIN_USER);
   const navigate = useNavigate(); // Initialize useNavigate
+  const [loginUser, {data, loading, error}] = useMutation(LOGIN_USER);
 
-  const handleInputChange = (e) => {
-    const {name, value} = e.target;
-    setFormData({...formData, [name]: value});
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try{
-      const response = await login({
-        variables: {
-          email:formData.email,
-          password:formData.password,
-        },
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const { data } = await loginUser({
+        variables: { ...formData },
       });
 
-      if (response.data) {
-        localStorage.setItem('token', response.data.login.token);
-        navigate('/');
-      }
-    } catch (err) {
-      console.error(err);
+      const token = data.login.token;
+      localStorage.setItem('token', token);  // Save token to localStorage
+
+      navigate('/');
+      onLogIn();  // Call the onLogIn function to update isLoggedIn state
+    } catch (e) {
+      console.error(e);
     }
   };  
 
@@ -45,7 +38,7 @@ const Login = () => {
         name='email'
         placeholder='Email'
         value={formData.email}
-        onChange={handleInputChange}
+        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         required
       />
       <input 
@@ -53,7 +46,7 @@ const Login = () => {
         name='password'
         placeholder='Password' 
         value={formData.password}
-        onChange={handleInputChange}
+        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
         required
       />
       <button type='submit' disabled={loading}>

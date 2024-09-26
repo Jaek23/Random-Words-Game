@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ApolloProvider } from '@apollo/client';
 import WordButton from './components/WordButton';
 import client from "./apollo/apolloClient";
@@ -6,27 +6,37 @@ import Navbar from "./components/Navbar";
 import {BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignUpPage from "./pages/SignUpPage";
 
-// Set up Apollo Client
-// const client = new ApolloClient({
-//   uri: 'http://localhost:4000/graphql', // Replace with your GraphQL server URI
-//   cache: new InMemoryCache(),
-// });
-
-// const client = new ApolloClient({
-//   // uri:'http://localhost:3001/graphql',
-//   uri:'http://localhost:5000/graphql',
-//   cache: new InMemoryCache(),
-// });
-
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+
+  // Effect to track changes in localStorage token and update isLoggedIn state 
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(!!localStorage.getItem('token'));
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Function to handle login
+  const handleLogIn = () => {
+    setIsLoggedIn(true); // Manually set to true right after login
+  };
+
+  // Function to handle logout from Navbar and update state 
+  const handleLogOut = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+  }
+
   return (
     <ApolloProvider client={client}>
       <Router>
-        <Navbar/>
+        <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogOut}/>
         <Routes>
-          <Route path="/" element={<WordButton/>}/>
-          <Route path="/signup" element={<SignUpPage/>}/>
+          <Route path="/" element={<WordButton isLoggedIn={isLoggedIn}/>}/>
+          <Route path="/signup" element={<SignUpPage onLogIn={handleLogIn}/>}/>
         </Routes>
       </Router>
     </ApolloProvider>
