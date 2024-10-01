@@ -12,4 +12,13 @@ export const GET_USER = gql`
             correctWordCount
         }
     }
-`;
+`
+export const GET_USER_HIGH_SCORE = gql `
+    query GetUserHighScores {
+        getUserHighScores {
+            score
+            date
+        }
+    }
+`
+;

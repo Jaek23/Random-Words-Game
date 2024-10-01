@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GET_RANDOM_WORD } from '../utils/queries';
 import Score from './Score';
 import { VERIFY_WORD } from '../utils/mutations';
+import HighScore from './HighScore';
 
 const WordButton = ({isLoggedIn}) => {
 
@@ -154,6 +155,9 @@ if (error) return <p>Error: {error.message}</p>;
         {loading ? 'Generating' : 'Generate Random Word'}
       </button>
        {isLoggedIn && <Score onScoreUpdate={handleScoreUpdate}/>}
+       {isLoggedIn ? (
+        <HighScore/>
+       ) : <p>Please log in to see your high scores </p>}
    </div>
   )
 }

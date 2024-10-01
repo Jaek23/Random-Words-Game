@@ -40,6 +40,25 @@ const resolvers = {
             }
 
             return user;
+        },
+
+        // Query to fetch user's high score 
+        getUserHighScores: async (_, args, context) => {
+            const userId = context.userId;
+            if(!userId) {
+                throw new Error('Not Authenticated');
+            }
+
+            // Find the user in the database 
+            const user = await User.findById(userId);
+            if(!user) {
+                throw new Error('User not found');
+            }
+
+            console.log(user.highScores);
+
+            // Return the highScores array from the user 
+            return user.highScores;
         }
     },
 
@@ -58,6 +77,18 @@ const resolvers = {
                 }
 
                 user.correctWordCount +=1;
+                const currentDate = new Date().toISOString();
+                user.highScores.push({
+                    score: user.correctWordCount,
+                    date: currentDate
+                })
+
+                // Sort highScores by the score in descending order and keep onlt the top 5 
+                user.highScores = user.highScores
+                    .sort((a, b) => b.score - a.score) // Sort from the highest to lowest score 
+                    .slice(0, 5); // Keep only the top 5 scores 
+
+                // Save the updated user data 
                 await user.save();
 
                 return true; // Return true if word is correct 
@@ -98,6 +129,10 @@ const resolvers = {
             if(!valid) {
                 throw new Error('Invalid Password');
             }
+
+            // Reset the user's score (correctWordCount) to 0 
+            user.correctWordCount = 0;
+            await user.save();
 
             // Create a JWT token
             const token = jwt.sign({userId:user._id}, process.env.JWT_SECRET, {

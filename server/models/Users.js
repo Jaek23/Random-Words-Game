@@ -19,6 +19,12 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default:0,
     },
+    highScores:[
+        {
+            score: Number,
+            date: Date,
+        }
+    ]
 });
 
 const User = mongoose.model('User', userSchema);

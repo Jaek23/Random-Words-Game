@@ -5,6 +5,12 @@ const typeDefs = gql`
     type Query {
         getRandom: String
         getUser: User
+        getUserHighScores: [HighScore]
+    }
+    
+    type HighScore {
+        score: Int
+        date: String
     }
     
     type User {
@@ -13,6 +19,7 @@ const typeDefs = gql`
         email:String!
         password:String!
         correctWordCount:Int!
+        highScores: [HighScore]
     }
     
     type AuthPayload {

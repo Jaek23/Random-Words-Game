@@ -5,6 +5,7 @@ import client from "./apollo/apolloClient";
 import Navbar from "./components/Navbar";
 import {BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignUpPage from "./pages/SignUpPage";
+import HighScore from "./components/HighScore";
 
 
 function App() {
@@ -25,9 +26,15 @@ function App() {
   };
 
   // Function to handle logout from Navbar and update state 
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
+
+    try{
+      await client.clearStore();
+    } catch (err) {
+      console.error('Error clearing cache', err);
+    }
   }
 
   return (
@@ -36,6 +43,7 @@ function App() {
         <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogOut}/>
         <Routes>
           <Route path="/" element={<WordButton isLoggedIn={isLoggedIn}/>}/>
+          {/* <Route path="/high-scores" element={<HighScore isLoggedIn={isLoggedIn}/>}/> */}
           <Route path="/signup" element={<SignUpPage onLogIn={handleLogIn}/>}/>
         </Routes>
       </Router>
