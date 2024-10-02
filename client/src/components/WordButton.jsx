@@ -4,6 +4,7 @@ import { GET_RANDOM_WORD } from '../utils/queries';
 import Score from './Score';
 import { VERIFY_WORD } from '../utils/mutations';
 import HighScore from './HighScore';
+import styled from 'styled-components';
 
 const WordButton = ({isLoggedIn}) => {
 
@@ -103,12 +104,11 @@ const handleClick = async () => {
 
 const renderInputBoxes = () => {
   return word.split('').map((char, index) => (
-    <input
+    <StyledInput
       key={index}
       type='text'
       maxLength='1'
       value={inputs[index]}
-      style={{width:'2rem', margin:'0.5rem'}}
       onChange={(e) => handleInputChange(e, index)}
       onKeyDown={(e) => handlekeyDown(e, index)}
       ref={(el) => inputRefs.current[index] = el}
@@ -143,23 +143,75 @@ const handlekeyDown = (e, index) => {
   }
 };
 
-if (loading) return <p>Loading...</p>;
-if (error) return <p>Error: {error.message}</p>;
+if (loading) return <p style={{textAlign:'center'}}>Loading...</p>;
+if (error) return <p style={{textAlign:'center'}}>Error: {error.message}</p>;
 
   return (
-    <div>
-      {word && <p>Generated Word: {word}</p>}
+    <StyledDiv>
+      {word && <StyledP>Generated Word: {word}</StyledP>}
       {error && <p>Error: {error.message}</p>}
-      <div>{renderInputBoxes()}</div>
-      <button onClick={handleClick} disabled={loading} >
-        {loading ? 'Generating' : 'Generate Random Word'}
-      </button>
+      <InputContainer>{renderInputBoxes()}</InputContainer>
+      <StyledButton onClick={handleClick} disabled={loading} >
+        {loading ? 'Skipping' : 'Skip Word'}
+      </StyledButton>
        {isLoggedIn && <Score onScoreUpdate={handleScoreUpdate}/>}
        {isLoggedIn ? (
         <HighScore/>
-       ) : <p>Please log in to see your high scores </p>}
-   </div>
+       ) : <p>*Please sign up or log in to see your scores </p>}
+   </StyledDiv>
   )
 }
 
 export default WordButton
+
+const StyledDiv = styled.div`
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:80vh;
+  font-family: "Anton", sans-serif;
+`
+const StyledP = styled.p`
+  margin-bottom: 20px; /* Adjust this value to increase/decrease gap */
+  font-size:35px;
+`;
+
+const InputContainer = styled.div`
+  margin-bottom: 20px; /* Increase gap between input boxes and other elements */
+  display: flex;
+`;
+
+const StyledButton = styled.button`
+  margin-bottom: 20px; /* Increase gap below the button */
+  padding: 0.5rem 2rem; /* Increase padding for a bigger button */
+  font-size: 1.2rem; /* Adjust font size */
+  font-family: "Anton", sans-serif;
+  color: white; /* Text color */
+  background-color: #007bff; /* Button background color */
+  border: 2px solid #0056b3; /* Border color */
+  border-radius: 8px; /* Round the corners */
+  cursor: pointer; /* Change cursor on hover */
+  transition: background-color 0.3s, border-color 0.3s; /* Smooth transition for hover effects */
+
+  &:hover {
+    background-color: #0056b3; /* Change background color on hover */
+    border-color: #004494; /* Change border color on hover */
+  }
+`;
+
+const StyledInput = styled.input`
+  width: 2rem;
+  height:2rem;
+  margin:0.5rem;
+  border:5px solid black;
+  text-align: center;
+  font-size: 1.5rem; 
+  font-family: 'Arial', sans-serif;
+  
+
+  //  &:focus {
+  //   border-color: blue; /* Change border color on focus */
+  //   background-color: rgba(173, 216, 230, 0.5); /* Light blue background on focus */
+  // }
+`

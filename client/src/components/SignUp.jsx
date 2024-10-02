@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import { useMutation } from '@apollo/client';
 import { SIGNUP_USER } from '../utils/mutations';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 const SignUp = () => {
   
@@ -41,36 +42,57 @@ const SignUp = () => {
   };
 
   return (
-    <form onSubmit={hanldeSubmit}>
-      <input 
-        type="text" 
-        name='username'
-        placeholder='Username'
-        value={formData.username}
-        onChange={handleInputChange}
-        required
-      />
-      <input 
-        type="email"
-        name='email'
-        placeholder='Email' 
-        value={formData.email}
-        onChange={handleInputChange}
-        required
-      />
-      <input 
-        type="password"
-        name='password'
-        placeholder='Password' 
-        value={formData.password}
-        onChange={handleInputChange}
-      />
-      <button type='submit' disabled={loading}>
-        {loading ? 'Signing Up...' : 'Sign Up'}
-      </button>
-        {error && <p>Error: {error.message}</p>}
-    </form>
+    <SignUpForm onSubmit={hanldeSubmit}>
+      <h2>Sign Up</h2>
+      <SignUpContent>
+        <input 
+          type="text" 
+          name='username'
+          placeholder='Username'
+          value={formData.username}
+          onChange={handleInputChange}
+          required
+        />
+        <input 
+          type="email"
+          name='email'
+          placeholder='Email' 
+          value={formData.email}
+          onChange={handleInputChange}
+          required
+        />
+        <input 
+          type="password"
+          name='password'
+          placeholder='Password' 
+          value={formData.password}
+          onChange={handleInputChange}
+        />
+        <button type='submit' disabled={loading}>
+          {loading ? 'Signing Up...' : 'Sign Up'}
+        </button>
+          {error && <p>Error: {error.message}</p>}
+      </SignUpContent>
+    </SignUpForm>
   )
 }
 
 export default SignUp
+
+const SignUpForm = styled.form`
+  border:2px solid black;
+  border-radius:20px;
+  height:350px;
+  width:300px;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+`
+
+const SignUpContent = styled.div`
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+`

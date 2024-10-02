@@ -43,7 +43,6 @@ function App() {
         <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogOut}/>
         <Routes>
           <Route path="/" element={<WordButton isLoggedIn={isLoggedIn}/>}/>
-          {/* <Route path="/high-scores" element={<HighScore isLoggedIn={isLoggedIn}/>}/> */}
           <Route path="/signup" element={<SignUpPage onLogIn={handleLogIn}/>}/>
         </Routes>
       </Router>
