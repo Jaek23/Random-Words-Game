@@ -15,6 +15,9 @@ const [isTyping, setIsTyping] = useState(false);
 const [firstWordLoaded, setFirstWordLoaded] = useState(false);
 const [firstWordTyping, setFirstWordTyping] = useState(false);
 const [refetchScore, setRefetchScore] = useState(null);
+const [timeLeft, setTimeLeft] = useState(30);
+const [score, setScore] = useState(0);
+const [gameOver, setGameOver] = useState(false); //Track game state
 
 
 const {loading, data, error, refetch} = useQuery(GET_RANDOM_WORD, {
@@ -36,11 +39,21 @@ const {loading, data, error, refetch} = useQuery(GET_RANDOM_WORD, {
     }
 });
 
+useEffect(() => {
+  if(timeLeft > 0 && !gameOver) {
+    const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+    return () => clearTimeout(timer);
+  } else if(timeLeft === 0) {
+    setGameOver(true);
+  }
+}, [timeLeft, gameOver]);
+
 // Mutation hook for verifying the word
 const [verifyWord] = useMutation(VERIFY_WORD, {
   onCompleted: (data) => {
     if (data.verifyWord) {
       console.log("Word verified successfully!");
+      setScore(score + 1)
       // Refetch user data to update the score when word is correct
       if (refetchScore) {
         refetchScore(); // Trigger the refetch of user score
@@ -80,6 +93,7 @@ useEffect(() => {
 }, [inputs, isTyping, firstWordLoaded, firstWordTyping, word.length]);
 
 const handleClick = async () => {
+  if(gameOver) return;
   console.log("handleClick called - refetching word");
   try{
     const {data} = await refetch(); // refetching the query for a new word 
@@ -143,22 +157,37 @@ const handlekeyDown = (e, index) => {
   }
 };
 
-if (loading) return <p style={{textAlign:'center'}}>Loading...</p>;
+if (loading) return <p style={{textAlign:'center', fontFamily:'Anton, sans-serif'}}>Loading...</p>;
 if (error) return <p style={{textAlign:'center'}}>Error: {error.message}</p>;
 
   return (
-    <StyledDiv>
-      {word && <StyledP>Generated Word: {word}</StyledP>}
-      {error && <p>Error: {error.message}</p>}
-      <InputContainer>{renderInputBoxes()}</InputContainer>
-      <StyledButton onClick={handleClick} disabled={loading} >
-        {loading ? 'Skipping' : 'Skip Word'}
-      </StyledButton>
-       {isLoggedIn && <Score onScoreUpdate={handleScoreUpdate}/>}
-       {isLoggedIn ? (
-        <HighScore/>
-       ) : <p>*Please sign up or log in to see your scores </p>}
-   </StyledDiv>
+  //   <StyledDiv>
+  //     {word && <StyledP>Generated Word: {word}</StyledP>}
+  //     {error && <p>Error: {error.message}</p>}
+  //     <InputContainer>{renderInputBoxes()}</InputContainer>
+  //     <StyledButton onClick={handleClick} disabled={loading} >
+  //       {loading ? 'Skipping' : 'Skip Word'}
+  //     </StyledButton>
+  //      {isLoggedIn && <Score onScoreUpdate={handleScoreUpdate}/>}
+  //  </StyledDiv>
+  <StyledDiv>
+      {gameOver ? (
+        <div>
+          <p>Time's Up! Your Score: {score}</p>
+          <StyledButton onClick={() => window.location.reload()}>Play Again</StyledButton>
+        </div>
+      ) : (
+        <>
+          <p>Time Left: {timeLeft}s</p>
+          {word && <StyledP>Generated Word: {word}</StyledP>}
+          <InputContainer>{renderInputBoxes()}</InputContainer>
+          <StyledButton onClick={handleClick} disabled={loading}>
+            {loading ? 'Skipping' : 'Skip Word'}
+          </StyledButton>
+          {isLoggedIn && <Score onScoreUpdate={handleScoreUpdate} />}
+        </>
+      )}
+    </StyledDiv>
   )
 }
 

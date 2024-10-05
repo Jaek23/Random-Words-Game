@@ -4,7 +4,7 @@ import { SIGNUP_USER } from '../utils/mutations';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const SignUp = () => {
+const SignUp = ({onLogIn}) => {
   
   const [formData, setFormData] = useState({
     username:'',
@@ -33,8 +33,11 @@ const SignUp = () => {
       });
 
       if (response.data) {
-        localStorage.setItem('token', response.data.signUp.token);
-        navigate('/');
+        // localStorage.setItem('token', response.data.signUp.token);
+        const token = response.data.signUp.token;
+        localStorage.setItem('token', token);
+        onLogIn();
+        navigate('/game');
       }
     } catch (err) {
       console.error(err);
@@ -43,9 +46,9 @@ const SignUp = () => {
 
   return (
     <SignUpForm onSubmit={hanldeSubmit}>
-      <h2>Sign Up</h2>
+      <SignUpHeader>Sign Up</SignUpHeader>
       <SignUpContent>
-        <input 
+        <StyledInput 
           type="text" 
           name='username'
           placeholder='Username'
@@ -53,7 +56,7 @@ const SignUp = () => {
           onChange={handleInputChange}
           required
         />
-        <input 
+        <StyledInput 
           type="email"
           name='email'
           placeholder='Email' 
@@ -61,16 +64,16 @@ const SignUp = () => {
           onChange={handleInputChange}
           required
         />
-        <input 
+        <StyledInput 
           type="password"
           name='password'
           placeholder='Password' 
           value={formData.password}
           onChange={handleInputChange}
         />
-        <button type='submit' disabled={loading}>
+        <StyledButton type='submit' disabled={loading}>
           {loading ? 'Signing Up...' : 'Sign Up'}
-        </button>
+        </StyledButton>
           {error && <p>Error: {error.message}</p>}
       </SignUpContent>
     </SignUpForm>
@@ -95,4 +98,28 @@ const SignUpContent = styled.div`
   display:flex;
   flex-direction:column;
   gap:20px;
+`
+const StyledInput = styled.input`
+  height:10px;
+  width:250px;
+  font-size:1.2rem;
+  border:2px solid black;
+  padding:10px;
+  font-family:"Anton", sans-serif;
+`
+const StyledButton = styled.button`
+  height:15px;
+  width:100%;
+  font-size:1.2rem;
+  padding:15px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  // background-color: #4CAF50;
+  cursor:pointer;
+  // border:2px solid black;
+  font-family:"Anton", sans-serif;
+`
+const SignUpHeader = styled.h2`
+  font-family:"Anton", sans-serif;
 `

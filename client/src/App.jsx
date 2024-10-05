@@ -5,7 +5,8 @@ import client from "./apollo/apolloClient";
 import Navbar from "./components/Navbar";
 import {BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignUpPage from "./pages/SignUpPage";
-import HighScore from "./components/HighScore";
+import HighScorePage from "./pages/HighScorePage";
+import HomePage from "./pages/HomePage";
 
 
 function App() {
@@ -42,8 +43,10 @@ function App() {
       <Router>
         <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogOut}/>
         <Routes>
-          <Route path="/" element={<WordButton isLoggedIn={isLoggedIn}/>}/>
+          <Route path="/" element={<HomePage/>}/>
+          <Route path="/game" element={<WordButton isLoggedIn={isLoggedIn}/>}/>
           <Route path="/signup" element={<SignUpPage onLogIn={handleLogIn}/>}/>
+          <Route path="/score" element={<HighScorePage isLoggedIn={isLoggedIn}/>}/>
         </Routes>
       </Router>
     </ApolloProvider>

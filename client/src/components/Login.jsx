@@ -25,7 +25,7 @@ const Login = ({onLogIn}) => {
       const token = data.login.token;
       localStorage.setItem('token', token);  // Save token to localStorage
 
-      navigate('/');
+      navigate('/game');
       onLogIn();  // Call the onLogIn function to update isLoggedIn state
     } catch (e) {
       console.error(e);
@@ -34,9 +34,9 @@ const Login = ({onLogIn}) => {
 
   return (
     <LoginForm onSubmit={handleSubmit}>
-      <h2>Login</h2>
+      <LoginHeader>Login</LoginHeader>
       <LoginContent style={{display:'flex', flexDirection:'column', gap:'20px'}}>
-        <input 
+        <StyledInput 
           type="email" 
           name='email'
           placeholder='Email'
@@ -44,7 +44,7 @@ const Login = ({onLogIn}) => {
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
         />
-        <input 
+        <StyledInput 
           type="password"
           name='password'
           placeholder='Password' 
@@ -52,9 +52,9 @@ const Login = ({onLogIn}) => {
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           required
         />
-        <button type='submit' disabled={loading}>
+        <StyledButton type='submit' disabled={loading}>
           {loading ? 'Logging In...' : 'Log In'}
-        </button>
+        </StyledButton>
           {error && <p>Error: {error.message}</p>}
       </LoginContent>
     </LoginForm>
@@ -78,4 +78,28 @@ const LoginContent = styled.div`
   display:flex;
   flex-direction:column;
   gap:20px;
+`
+const StyledInput = styled.input`
+  height:10px;
+  width:250px;
+  font-size:1.2rem;
+  border:2px solid black;
+  padding:10px;
+  font-family:"Anton", sans-serif;
+`
+const StyledButton = styled.button`
+  height:15px;
+  width:100%;
+  font-size:1.2rem;
+  padding:15px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  // background-color: #4CAF50;
+  cursor:pointer;
+  // border:2px solid black;
+  font-family:"Anton", sans-serif;
+`
+const LoginHeader = styled.h2`
+  font-family:"Anton", sans-serif;
 `

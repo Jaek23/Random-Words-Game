@@ -10,14 +10,21 @@ const Navbar = ({isLoggedIn, onLogout}) => {
   navigate('/')
  }
 
+ const backHome = () => {
+  navigate('/');
+}
+
   return (
     <StyledDiv>
-      <p>RandomWordGame</p>
+      <NavP onClick={backHome}>RandomWordGame</NavP>
+      <div style={{display:'flex', gap:'20px'}}>
       {isLoggedIn ? (
         <StyledLink onClick={handleLogOut}>Log Out</StyledLink>
       ) : (
-        <StyledLink to='/signup'>Sign Up</StyledLink>
+      <StyledLink to='/signup'>Sign Up</StyledLink>
       )}
+      {isLoggedIn && <StyledLink to='/score'>Score</StyledLink>}
+      </div>
     </StyledDiv>
   )
 }
@@ -38,4 +45,9 @@ const StyledLink = styled(Link)`
   &: hover {
     text-decoration:underline;
   }
+`
+const NavP = styled.p`
+  cursor:pointer;
+  text-decoration: none;
+  color:black;
 `

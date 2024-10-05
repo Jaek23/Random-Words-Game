@@ -5,7 +5,7 @@ import SignUp from '../components/SignUp'
 const SignUpPage = ({onLogIn}) => {
   return (
     <div style={{display:'flex', justifyContent:'center', height:'80vh', alignItems:'center', gap:'50px'}}>
-      <SignUp/>
+      <SignUp onLogIn={onLogIn}/>
       <Login onLogIn={onLogIn}/>
     </div>
   )
